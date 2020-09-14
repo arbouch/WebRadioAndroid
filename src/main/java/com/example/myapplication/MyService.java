@@ -1,5 +1,6 @@
 package com.example.myapplication;
 
+import android.annotation.SuppressLint;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -22,6 +23,8 @@ import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
 import java.io.IOException;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MyService extends Service {
 
@@ -45,8 +48,8 @@ public class MyService extends Service {
 
         createNotificationChannel();
 
-                new Player().execute("http://icecast.funradio.fr/fun-1-44-128");
-        Log.d("MyApplication",   " works! ");
+
+        new Player().execute("http://icecast.funradio.fr/fun-1-44-128");
 
         startForeground();
 
@@ -75,19 +78,39 @@ public class MyService extends Service {
                 .setContentText("Service is running background")
                 .setContentIntent(pendingIntent)
                 .build());
+
     }
 
     class Player extends AsyncTask<String, Void, Boolean> {
 
+        @SuppressLint("WrongThread")
         @Override
         protected Boolean doInBackground(String... strings) {
+            Thread th=new Thread(){
+
+
+
+
+                @Override
+                public void run() {
+              //      String audiouri="http://icecast.funradio.fr/fun-1-44-128";
+             //       MediaPlayer.create(getApplicationContext(), Uri.parse(audiouri)).start();
+               //             new Player().execute("http://icecast.funradio.fr/fun-1-44-128");
+
+                }
+            };
+           th.start();
+
+
+
             Boolean prepared = false;
 
             try {
 //                mediaPlayer.setDataSource(strings[0]);
-                String audiouri="http://icecast.funradio.fr/fun-1-44-128";
-                MediaPlayer.create(getApplicationContext(), Uri.parse(audiouri)).start();
 
+               String audiouri="http://streaming.radio.rtl.fr/rtl-1-48-192";
+                MediaPlayer.create(getApplicationContext(), Uri.parse(audiouri)).start();
+/*
                 mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                     @Override
                     public void onCompletion(MediaPlayer mediaPlayer) {
@@ -98,7 +121,7 @@ public class MyService extends Service {
                         mediaPlayer.reset();
                     }
                 });
-
+*/
                 mediaPlayer.prepare();
                 prepared = true;
 

@@ -11,6 +11,7 @@ import android.widget.Button;
 
 public class MainActivity extends AppCompatActivity {
 Button btnplay;
+    Button  btnpause;
     boolean started=false;
     private MediaPlayer mediaPlayer;
 
@@ -19,6 +20,8 @@ Button btnplay;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         btnplay= findViewById(R.id.button3);
+        btnpause= findViewById(R.id.button4);
+
         mediaPlayer = new MediaPlayer();
         mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 
@@ -28,23 +31,19 @@ Button btnplay;
                 startService(new Intent(MainActivity.this,MyService.class));
             }
         });
+        btnpause.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                stopService(new Intent(MainActivity.this,MyService.class));
+            }
+        });
 
-    }
-    @Override
-    protected void onPause() {
-        super.onPause();
-
-        if (mediaPlayer != null) {
-            mediaPlayer.release();
-            mediaPlayer = null;
-        }
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
-        if (mediaPlayer != null) {
-            mediaPlayer.release();
-        }
+    protected void onDestroy() {
+        stopService(new Intent(MainActivity.this,MyService.class));
+
+        super.onDestroy();
     }
 }
